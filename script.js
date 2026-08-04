@@ -23,7 +23,13 @@ function getComputerChoice() {
 
 function getHumanChoice() {
     let input = prompt("Rock, paper, or scissors?");
-    return input.toLowerCase();
+    //return input.toLowerCase();
+    input = input ? input.toLowerCase() : "";
+    while (input !== "rock" && input !== "paper" && input !== "scissors") {
+        input = prompt("Invalid choice. Rock, paper, or scissors?");
+        input = input ? input.toLowerCase() : "";
+    }
+    return input;
 }
 
 function playRound(){
