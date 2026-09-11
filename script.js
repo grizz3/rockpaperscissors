@@ -1,5 +1,7 @@
 let humanScore = 0;
 let computerScore = 0;
+let roundCount = 0;
+const maxRounds = 5;
 
 let computerChoice = "";
 let humanChoice = "";
@@ -21,71 +23,99 @@ function getComputerChoice() {
     }
 }
 
-function getHumanChoice() {
-    let input = prompt("Rock, paper, or scissors?");
-    //return input.toLowerCase();
-    input = input ? input.toLowerCase() : "";
-    while (input !== "rock" && input !== "paper" && input !== "scissors") {
-        input = prompt("Invalid choice. Rock, paper, or scissors?");
-        input = input ? input.toLowerCase() : "";
-    }
-    return input;
+function updateScores() {
+    document.getElementById("human-score").textContent = humanScore;
+    document.getElementById("computer-score").textContent = computerScore;
 }
 
-function playRound(){
-    humanChoice = getHumanChoice();
-    computerChoice = getComputerChoice();
-
-    if (humanChoice == computerChoice){
-        return "Tie."
-    }
-    else if(humanChoice == "rock"){
-        if (computerChoice == "scissors"){
-            humanScore++;
-            return "You win!";
-        }
-        else{
-            computerScore++;
-            return "You lose.";
-        }
-    }
-    else if(humanChoice == "paper"){
-        if (computerChoice == "rock"){
-            humanScore++;
-            return "You win!";
-        }
-        else{
-            computerScore++;
-            return "You lose.";
-        }
-    }
-    else if(humanChoice == "scissors"){
-        if (computerChoice == "paper"){
-            humanScore++;
-            return "You win!";
-        }
-        else{
-            computerScore++;
-            return "You lose.";
-        }
-    }
+function updateRoundCount() {
+    document.getElementById("round-count-display").textContent = roundCount;
 }
 
-function playGame(){
-    for (let round = 0; round < 5; round++){
-        console.log(playRound());
-    }
+function updateResult(resultText) {
+    document.getElementById("result-text").textContent = resultText;
+}
 
+function updateWinner(winnerText) {
+    document.getElementById("winner-text").textContent = winnerText;
+}
+
+function determineWinner() {
     if (humanScore > computerScore) {
-        console.log("You win the game " + humanScore + " : " + computerScore);
+        return "You win the game " + humanScore + " : " + computerScore;
     } else if (humanScore < computerScore) {
-        console.log("You lose the game " + humanScore + " : " + computerScore);
+        return "You lose the game " + humanScore + " : " + computerScore;
     }
     else {
-        console.log("Tie game " + humanScore + " : " + computerScore);
+        return "Tie game " + humanScore + " : " + computerScore;
     }
 }
 
-playGame();
-//console.log("humanChoice = " + humanChoice);
-//console.log("computerChoice = " + computerChoice);
+function playRound(humanChoiceInput) {
+    if (roundCount >= maxRounds) {
+        return;
+    }
+
+    humanChoice = humanChoiceInput;
+    computerChoice = getComputerChoice();
+
+    let result = "";
+
+    if (humanChoice == computerChoice) {
+        result = "Tie! Both chose " + humanChoice + ".";
+    }
+    else if (humanChoice == "rock") {
+        if (computerChoice == "scissors") {
+            humanScore++;
+            result = "You win! Rock crushes scissors.";
+        }
+        else {
+            computerScore++;
+            result = "You lose. Paper covers rock.";
+        }
+    }
+    else if (humanChoice == "paper") {
+        if (computerChoice == "rock") {
+            humanScore++;
+            result = "You win! Paper covers rock.";
+        }
+        else {
+            computerScore++;
+            result = "You lose. Scissors cut paper.";
+        }
+    }
+    else if (humanChoice == "scissors") {
+        if (computerChoice == "paper") {
+            humanScore++;
+            result = "You win! Scissors cut paper.";
+        }
+        else {
+            computerScore++;
+            result = "You lose. Rock crushes scissors.";
+        }
+    }
+
+    if (humanChoice != computerChoice) {
+        roundCount++;
+    }
+
+    updateScores();
+    updateRoundCount();
+    updateResult(result + " Computer chose " + computerChoice + ".");
+
+    if (roundCount >= maxRounds) {
+        updateWinner(determineWinner());
+    }
+}
+
+document.getElementById("rock-btn").addEventListener("click", function() {
+    playRound("rock");
+});
+
+document.getElementById("paper-btn").addEventListener("click", function() {
+    playRound("paper");
+});
+
+document.getElementById("scissors-btn").addEventListener("click", function() {
+    playRound("scissors");
+});
